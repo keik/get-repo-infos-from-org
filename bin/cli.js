@@ -33,7 +33,7 @@ const argv = require("yargs")
   });
   const REPOS_HEADERS = [
     "name",
-    "url",
+    "html_url",
     "description",
     "language",
     "created_at",
