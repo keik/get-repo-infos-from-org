@@ -16,6 +16,11 @@ const argv = require("yargs")
       description: "Target repository owner orgs.",
       requiresArg: true,
       required: true
+    },
+    includeContributors: {
+      boolean: true,
+      description: "Include contributors list of each repositories.",
+      required: false
     }
   }).argv;
 
@@ -34,20 +39,22 @@ const argv = require("yargs")
     "pushed_at",
     "fork",
     "archived",
-    "disabled",
-    "contributors"
+    "disabled"
   ];
-  for (const repo of repos) {
-    repo.contributors = (
-      await require("../getContributors")({
-        githubApiToken: argv.githubApiToken,
-        owner: argv.org,
-        repo: repo.name,
-        verbose: argv.verbose
-      })
-    )
-      .sort((a, b) => b.contributions - a.contributions)
-      .map(a => a.login);
+  if (argv.includeContributors) {
+    REPOS_HEADERS.push("contributors");
+    for (const repo of repos) {
+      repo.contributors = (
+        await require("../getContributors")({
+          githubApiToken: process.env.GITHUB_TOKEN,
+          owner: argv.org,
+          repo: repo.name,
+          verbose: argv.verbose
+        })
+      )
+        .sort((a, b) => b.contributions - a.contributions)
+        .map(a => a.login);
+    }
   }
   console.log(
     [
