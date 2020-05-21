@@ -12,12 +12,6 @@ const argv = require("yargs")
       description: "Run with verbose logs",
       required: false
     },
-    githubApiToken: {
-      description:
-        "Your GitHub Access Token. Get here https://github.com/settings/tokens",
-      requiresArg: true,
-      required: true
-    },
     org: {
       description: "Target repository owner orgs.",
       requiresArg: true,
@@ -27,7 +21,7 @@ const argv = require("yargs")
 
 (async () => {
   const repos = await require("../getRepos")({
-    githubApiToken: argv.githubApiToken,
+    githubApiToken: process.env.GITHUB_TOKEN,
     org: argv.org,
     verbose: argv.verbose
   });
